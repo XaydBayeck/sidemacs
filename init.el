@@ -1,10 +1,10 @@
-;;; init.el --- Sid's Emacs configuration  -*- lexical-binding: t; -*-
+;;; init.el --- Sid's configuration  -*- lexical-binding: t; -*-
 
 ;; Copyright (C) 2023  Sid
 
 ;; Author: Sid <SidBayeck@outlook.com>
 ;; Maintainer: Sid <SidBayeck@outlook.com>
-;; URL: 
+;; URL: https://github.com/XaydBayeck/sidemacs
 ;; Version: 1.0.0
 ;; Package-Requires: ((emacs "29.1"))
 ;; Keywords: lisp config
@@ -26,12 +26,79 @@
 
 ;;; Commentary:
 ;;
-;; Sid's Emacs configuration
+;; Sid's configuration
+;;
+;;
+;;                      ════╦╦╦╦╗
+;;                  ╔═══════╩╩╩╩╩═════╗
+;;                ══╝ ╔═════════════╗ ║
+;;          ════════════════════════╬═╬══╗
+;;           \   ╔══╗ ╓  ╥ ╥  ╥     ║ ╚══╬════
+;;            ║  ║ ═╦ ║\ ║ ║  ║     ╚════╬════
+;;            ║  ╚══╝ ╨ `╜ ╚══╝          ║
+;;            ║   ╔══ ╔╗╔╗ ╔═╗ ╔═╕ ╔═╕   ║
+;;            ║   ╠═  ║╙╜║ ╟─╢ ║   ╚═╗   ║
+;;            ║   ╚══ ╨  ╨ ╨ ╨ ╚═╛ ╘═╝   ║
+;;              \═══════════╣  ╠════════/
+;;                 ═════════╝  ║
+;;                 ════════════╝
+;;
+;;                [S I D - E M A C S]
 ;;
 
 ;;; Code:
 
-;; Happy coding! ;)
+;;
+;; (@* "Startup" )
+;;
 
-(provide 'init)
+(when (version< emacs-version "29.1")
+  (error "This requires Emacs 29.1 and above!"))
+
+(when (featurep 'esup-child)
+  (setq gc-cons-threshold most-positive-fixnum))
+
+;;
+;; (@* "Version" )
+;;
+
+(defconst sidemacs-version "1.0.0"
+  "Sidemacs version")
+
+(defun sidemacs-version ()
+  "Show sidemacs version info."
+  (interactive)
+  (message "Sidemacs %s" sidemacs-version))
+
+;;
+;; (@* "Load Core" )
+;;
+
+;; proxy
+(setq url-proxy-services '(("http" . "127.0.0.1:7890")
+                           ("https" . "127.0.0.1:7890")))
+
+(setq load-path
+      (append (mapcar
+               (lambda (dir) (concat user-emacs-directory dir))
+               '("lisp/"
+                 "lisp/lib/"))
+              load-path))
+
+;;; Initialize
+(require 'sid-package)
+
+;;; Utilities
+;;; Enviroment
+;;; Standardize
+(require 'sid-dsp)
+(require 'sid-modules)
+;;; Others
+;;; Custom
+
+;; (provide 'init)
+;; local Variables
+;; coding: utf-8
+;; not-byte-compiled t
+;; End
 ;;; init.el ends here
