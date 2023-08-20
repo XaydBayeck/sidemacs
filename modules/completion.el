@@ -41,7 +41,9 @@
         ("C-n" . corfu-next)
         ("C-p" . corfu-previous)
         ("C-x C-k" . cape-dict)
-        ("C-x C-f" . cape-file))
+        ("C-x C-f" . cape-file)
+	("M-n" . corfu-popupinfo-scroll-up)
+	("M-p" . corfu-popupinfo-scroll-down))
   :config
   (add-hook 'corfu-mode-hook #'corfu-popupinfo-mode)
   (setq corfu-popupinfo-delay 0.1)
@@ -206,7 +208,7 @@
   :ensure t
   ;; Replace bindings. Lazily loaded due by `use-package'.
   :bind (;; remap bindings in `mode-specific-map'
- ([remap bookmark-jump]                 . consult-bookmark)
+	 ([remap bookmark-jump]                 . consult-bookmark)
          ;; ([remap evil-show-marks]               . consult-mark)
          ;; ([remap evil-show-jumps]               . +vertico/jump-list)
          ;; ([remap evil-show-registers]           . consult-register)
@@ -290,7 +292,7 @@
   (consult-customize
    consult-theme :preview-key '("M-SPC" :debounce 0.5 any)
    consult-ripgrep consult-git-grep consult-grep
-   consult-bookmark consult-recent-file consult-xref
+   consult-bookmark consult-recent-file
    consult--source-bookmark consult--source-file-register
    consult--source-recent-file consult--source-project-recent-file
    ;; :preview-key "M-."
@@ -313,7 +315,83 @@
   ;; (setq consult-project-function (lambda (_) (projectile-project-root)))
   ;;;; 5. No project support
   ;; (setq consult-project-function nil)
+  )
+
+(use-package marginalia
+  :ensure t
+  :init
+  (marginalia-mode)
+  :bind (:map minibuffer-local-map
+	      ("M-A" . marginalia-cycle)))
+
+(use-package embark
+  :ensure t
+  :bind
+  (("C-." . embark-act)
+   ("C-;" . embark-dwim)
+   ([remap describe-bindings] . embark-bindings))
+  :init
+  (setq prefix-help-command #'embark-prefix-help-command)
+  (add-hook 'eldoc-documentation-functions #'embark-eldoc-first-target)
+  :config
+  (add-to-list 'display-buffer-alist
+	       '("\\`\\*Embark Collect \\(Live\\|Completions\\)\\*"
+		 nil
+		 (window-parameters (mode-line-format . none)))))
+
+(use-package embark-consult
+  :ensure t
+  :hook
+  (embark-collect-mode . consult-preview-at-point-mode))
+
+;;
+;; (@* "Snippet" )
+;;
+
+;; Configure Tempel
+(use-package tempel
+  :ensure t
+  ;; Require trigger prefix before template name when completing.
+  :custom
+  ;; (tempel-trigger-prefix "<")
+  (tempel-path (concat user-emacs-directory "tempels"))
+
+  :bind (("S-SPC" . tempel-complete) ;; Alternative tempel-expand
+         ("S-RET" . tempel-insert)
+	 :map tempel-map
+	 ("M-]" . tempel-next)
+	 ("M-[" . tempel-previous))
+
+  :init
+
+  ;; Setup completion at point
+  (defun tempel-setup-capf ()
+    ;; Add the Tempel Capf to `completion-at-point-functions'.
+    ;; `tempel-expand' only triggers on exact matches. Alternatively use
+    ;; `tempel-complete' if you want to see all matches, but then you
+    ;; should also configure `tempel-trigger-prefix', such that Tempel
+    ;; does not trigger too often when you don't expect it. NOTE: We add
+    ;; `tempel-expand' *before* the main programming mode Capf, such
+    ;; that it will be tried first.
+    (setq-local completion-at-point-functions
+                (cons #'tempel-expand
+                      completion-at-point-functions)))
+
+  (add-hook 'conf-mode-hook 'tempel-setup-capf)
+  (add-hook 'prog-mode-hook 'tempel-setup-capf)
+  (add-hook 'text-mode-hook 'tempel-setup-capf)
+
+  ;; Optionally make the Tempel templates available to Abbrev,
+  ;; either locally or globally. `expand-abbrev' is bound to C-x '.
+  ;; (add-hook 'prog-mode-hook #'tempel-abbrev-mode)
+  ;; (global-tempel-abbrev-mode)
 )
+
+;; Optional: Add tempel-collection.
+;; The package is young and doesn't have comprehensive coverage.
+(use-package tempel-collection
+  :ensure t
+  :after temple)
 
 (provide 'completion)
 ;;; completion.el ends here

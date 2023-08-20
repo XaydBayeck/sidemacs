@@ -37,6 +37,7 @@
    '(";" . meow-reverse)
    '("," . meow-inner-of-thing)
    '("." . meow-bounds-of-thing)
+   '("/" . isearch-forward-regexp)
    '("[" . meow-beginning-of-thing)
    '("]" . meow-end-of-thing)
    '("a" . meow-append)
@@ -91,5 +92,17 @@
   :init (meow-global-mode)
   :config
   (meow-setup))
+
+;;
+;; (@* "Auto insert")
+;;
+
+(use-package autoinsert
+  :init
+  (setq auto-insert-query nil)
+  (setq auto-insert-directory (locate-user-emacs-file "templates"))
+  :hook (find-file . auto-insert)
+  :bind (:map minibuffer-local-must-match-map
+	      ("C-c C-c" . minibuffer-complete-and-exit)))
 
 (provide 'editor)

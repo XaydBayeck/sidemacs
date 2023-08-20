@@ -68,7 +68,35 @@
 ;; (@* "Font set" )
 ;;
 
+(when (display-graphic-p)
+    ;; Set default font
+    (set-face-attribute 'default
+                        nil
+                        :font "Hurmit Nerd Font Mono"
+                        :height 120)
 
+    ;; Fixed-pitch (monospaced) fonts 等宽字体
+    (set-face-attribute 'fixed-pitch
+                        nil
+                        :font "Hurmit Nerd Font Mono"
+                        :height 120)
+
+    ;; CJK fonts
+    (set-fontset-font t 'han (font-spec :family "Noto Serif CJK SC" :weight 'semi-bold :slant 'normal))
+    (set-fontset-font t 'kana (font-spec :family "Noto Serif CJK JP" :weight 'semi-bold :slant 'normal))
+    ;; Emoji
+    (set-fontset-font t 'symbol (font-spec :family "Noto Color Emoji") nil 'prepend))
+
+;;
+;; (@* "Line number" )
+;;
+
+(add-hook 'prog-mode-hook #'display-line-numbers-mode)
+(setq display-line-numbers-type 'relative)
+
+(electric-pair-mode t)
+(setq electric-pair-inhibit-predicate 'electric-pair-conservative-inhibit)
+(show-paren-mode t)
 
 (provide 'sid-dsp)
 ;;; sid-dsp.el ends here
