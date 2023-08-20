@@ -30,5 +30,66 @@
 
 (use-package magit :ensure t)
 
+;;
+;; (@* "Tree-Sitter" )
+;;
+
+(use-package treesit
+  :custom (treesit-font-lock-level 4))
+
+(use-package treesit-auto
+  :ensure t
+  :demand t
+  :hook (emacs-lisp-mode . (lambda () (treesit-parser-create 'elisp)))
+  :config
+  (setq treesit-auto-install 'prompt)
+  (global-treesit-auto-mode)
+  (add-to-list 'treesit-auto-recipe-list
+	       (make-treesit-auto-recipe
+		:lang 'elisp
+		:ts-mode 'emacs-lisp-mode
+		:url "https://github.com/Wilfred/tree-sitter-elisp")))
+
+;;
+;; (@* "rainbow brackets" )
+;;
+
+(use-package rainbow-delimiters
+  :ensure t
+  :hook (prog-mode . rainbow-delimiters-mode))
+
+;;
+;; (@* "File manager" )
+;;
+
+(use-package treemacs
+  :ensure t
+  :init
+  (let ((cache-dir (concat user-emacs-directory ".local/cache/")))
+    (setq treemacs-follow-after-init t
+	  treemacs-is-never-other-window t
+	  treemacs-sorting 'alphabetic-case-insensitive-asc
+	  treemacs-persist-file (concat cache-dir "treemacs-persist")
+	  treemacs-last-error-persist-file (concat cache-dir "treemacs-last-error-persist")))
+  :bind (:map global-map
+	      ("M-o s" . treemacs-select-window)
+	      ("M-o l" . treemacs-delete-other-windows)
+	      ("M-o t" . treemacs)
+	      ("M-o d" . treemacs-select-directory)
+	      ("M-o B" . treemacs-bookmark)
+	      ("M-o f" . treemacs-find-file)
+	      ("M-o T" . treemacs-find-tag))
+  :config
+  ;; Do't follow the cursor
+  (treemacs-follow-mode -1))
+
+(use-package treemacs-magit
+  :after (treemacs magit)
+  :ensure t)
+
+(use-package treemacs-icons-dired
+  :hook (dired-mode . treemacs-icons-dired-enable-once)
+  :ensure t)
+
 (provide 'tools)
 ;;; tools.el ends here

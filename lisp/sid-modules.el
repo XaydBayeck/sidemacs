@@ -23,6 +23,7 @@
 
 (require 'completion)
 (require 'editor)
+(require 'tools)
 
 (provide 'sid-modules)
 ;;; sid-modules.el ends here

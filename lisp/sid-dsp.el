@@ -87,6 +87,10 @@
     ;; Emoji
     (set-fontset-font t 'symbol (font-spec :family "Noto Color Emoji") nil 'prepend))
 
+(use-package all-the-icons
+  :ensure t
+  :if (display-graphic-p))
+
 ;;
 ;; (@* "Line number" )
 ;;
@@ -97,6 +101,10 @@
 (electric-pair-mode t)
 (setq electric-pair-inhibit-predicate 'electric-pair-conservative-inhibit)
 (show-paren-mode t)
+
+;;
+;; (@* "Alpha background" )
+(set-frame-parameter nil 'alpha-background 80)
 
 (provide 'sid-dsp)
 ;;; sid-dsp.el ends here

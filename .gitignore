@@ -18,3 +18,10 @@ dist/
 auto-save-list
 eln-cache
 elpa
+/.local/
+/custom.el
+/eshell/
+/history
+/projects
+/transient/
+/tree-sitter/
