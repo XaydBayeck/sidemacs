@@ -44,6 +44,10 @@
 (use-package doom-themes
   :demand t
   :ensure t
+  :commands
+  (doom-themes-visual-bell-config
+   doom-themes-treemacs-config
+   doom-themes-org-config)
   :config
   ;; Global settings (defaults)
   (setq doom-themes-enable-bold t    ; if nil, bold is universally disabled
@@ -55,7 +59,7 @@
   ;; Enable custom neotree theme (all-the-icons must be installed!)
   ;; (doom-themes-neotree-config)
   ;; or for treemacs users
-  (setq doom-themes-treemacs-theme "doom-atom") ; use "doom-colors" for less minimal icon theme
+  (setopt doom-themes-treemacs-theme "doom-atom") ; use "doom-colors" for less minimal icon theme
   (doom-themes-treemacs-config)
   ;; Corrects (and improves) org-mode's native fontification.
   (doom-themes-org-config))
@@ -84,6 +88,8 @@
     ;; CJK fonts
     (set-fontset-font t 'han (font-spec :family "Noto Serif CJK SC" :weight 'semi-bold :slant 'normal))
     (set-fontset-font t 'kana (font-spec :family "Noto Serif CJK JP" :weight 'semi-bold :slant 'normal))
+    ;;Unicode
+    (set-fontset-font t 'unicode (font-spec :family "Symbola" :weight 'bold) nil 'prepend)
     ;; Emoji
     (set-fontset-font t 'symbol (font-spec :family "Noto Color Emoji") nil 'prepend))
 
@@ -96,15 +102,41 @@
 ;;
 
 (add-hook 'prog-mode-hook #'display-line-numbers-mode)
-(setq display-line-numbers-type 'relative)
+(setopt display-line-numbers-type 'relative)
 
 (electric-pair-mode t)
-(setq electric-pair-inhibit-predicate 'electric-pair-conservative-inhibit)
+(setopt electric-pair-inhibit-predicate 'electric-pair-conservative-inhibit)
 (show-paren-mode t)
 
 ;;
 ;; (@* "Alpha background" )
+;;
+
 (set-frame-parameter nil 'alpha-background 80)
+
+(setq fancy-splash-image (expand-file-name "~/Pictures/oldensignal.xpm"))
+
+;;
+;; (@* "Pretty" )
+;;
+
+(require 'const)
+
+(setq-default prettify-symbols-alist basic-prettify-symbols)
+	
+(global-prettify-symbols-mode 1)
+
+;; (use-package valign
+;;   :ensure t
+;;   :commands valign-mode
+;;   :hook (org-mode . valign-mode)
+;;   :config
+;;   (setopt valign-fancy-bar t))
+
+(use-package org-modern
+  :ensure t
+  :hook (org-mode . org-modern-mode)
+  :hook (org-agenda-finalize . org-modern-agenda))
 
 (provide 'sid-dsp)
 ;;; sid-dsp.el ends here

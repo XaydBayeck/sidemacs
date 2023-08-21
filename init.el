@@ -63,7 +63,7 @@
 ;;
 
 (defconst sidemacs-version "1.0.0"
-  "Sidemacs version")
+  "Sidemacs version.")
 
 (defun sidemacs-version ()
   "Show sidemacs version info."
@@ -75,15 +75,40 @@
 ;;
 
 ;; proxy
-(setq url-proxy-services '(("http" . "127.0.0.1:7890")
+(setopt url-proxy-services '(("http" . "127.0.0.1:7890")
                            ("https" . "127.0.0.1:7890")))
 
+;; load-path
 (setq load-path
       (append (mapcar
                (lambda (dir) (concat user-emacs-directory dir))
                '("lisp/"
                  "lisp/lib/"))
               load-path))
+
+;; exec path
+;; (setq path-separator " ")
+;; (defun set-exec-path-from-shell-PATH ()
+;;   "Set up Emacs' variable `exec-path' and PATH environment variable to match
+;; that used by the user's shell.
+
+;; This is particularly useful under Mac OS X and macOS, where GUI
+;; apps are not started from a shell."
+;;   (interactive)
+;;   (let ((path-from-shell (replace-regexp-in-string
+;; 			  "[ \t\n]*$" "" (shell-command-to-string
+;; 					  "$SHELL --login -c 'echo $PATH'"
+;; 						    ))))
+;;     (setenv "PATH" path-from-shell)
+;;     (setq exec-path (split-string path-from-shell path-separator))))
+
+;; (set-exec-path-from-shell-PATH)
+(setenv "PATH"
+	(concat
+	 "/home/sid/.cabal/bin" path-separator
+	 "/home/sid/.ghcup/bin" path-separator
+	 (getenv "PATH")))
+(setq exec-path (split-string (getenv "PATH") path-separator))
 
 ;;; Initialize
 (require 'sid-package)

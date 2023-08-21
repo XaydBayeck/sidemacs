@@ -40,7 +40,11 @@
 (use-package treesit-auto
   :ensure t
   :demand t
+  :commands (global-treesit-auto-mode treesit-auto-mode)
+  ;; TODO: Add emacs-lisp-ts-mode
   :hook (emacs-lisp-mode . (lambda () (treesit-parser-create 'elisp)))
+  ;; TODO: Add haskell-ts-mode
+  :hook (haskell-mode . (lambda () (treesit-parser-create 'haskell)))
   :config
   (setq treesit-auto-install 'prompt)
   (global-treesit-auto-mode)
@@ -48,7 +52,12 @@
 	       (make-treesit-auto-recipe
 		:lang 'elisp
 		:ts-mode 'emacs-lisp-mode
-		:url "https://github.com/Wilfred/tree-sitter-elisp")))
+		:url "https://github.com/Wilfred/tree-sitter-elisp"))
+  (add-to-list 'treesit-auto-recipe-list
+	       (make-treesit-auto-recipe
+		:lang 'haskell
+		:ts-mode 'haskell-mode
+		:url "https://github.com/tree-sitter/tree-sitter-haskell")))
 
 ;;
 ;; (@* "rainbow brackets" )
@@ -59,11 +68,45 @@
   :hook (prog-mode . rainbow-delimiters-mode))
 
 ;;
+;; (@* "Higlight TODO" )
+;;
+
+(use-package hl-todo
+  :ensure t
+  :hook (prog-mode . hl-todo-mode)
+  :hook (yaml-ts-mode . hl-todo-mode)
+  :config
+  (setq hl-todo-highlight-punctuation ":"
+	hl-todo-keyword-faces
+	'(;; For reminders to change or add something at a later date.
+          ("TODO" warning bold)
+          ;; For code (or code paths) that are broken, unimplemented, or slow,
+          ;; and may become bigger problems later.
+          ("FIXME" error bold)
+          ;; For code that needs to be revisited later, either to upstream it,
+          ;; improve it, or address non-critical issues.
+          ("REVIEW" font-lock-keyword-face bold)
+          ;; For code smells where questionable practices are used
+          ;; intentionally, and/or is likely to break in a future update.
+          ("HACK" font-lock-constant-face bold)
+          ;; For sections of code that just gotta go, and will be gone soon.
+          ;; Specifically, this means the code is deprecated, not necessarily
+          ;; the feature it enables.
+          ("DEPRECATED" font-lock-doc-face bold)
+          ;; Extra keywords commonly found in the wild, whose meaning may vary
+          ;; from project to project.
+          ("NOTE" success bold)
+          ("BUG" error bold)
+          ("XXX" font-lock-constant-face bold))))
+
+
+;;
 ;; (@* "File manager" )
 ;;
 
 (use-package treemacs
   :ensure t
+  :commands (treemacs-follow-mode)
   :init
   (let ((cache-dir (concat user-emacs-directory ".local/cache/")))
     (setq treemacs-follow-after-init t
@@ -90,6 +133,44 @@
 (use-package treemacs-icons-dired
   :hook (dired-mode . treemacs-icons-dired-enable-once)
   :ensure t)
+
+;;
+;; (@* "Popper" )
+;;
+
+(use-package popper
+  :ensure t
+  :commands (popper-mode popper-echo-mode)
+  :bind (("C-'" . popper-toggle-latest)
+	 ("M-'" . popper-cycle)
+	 ("C-M-'" . popper-toggle-type))
+  :init
+  (setq popper-reference-buffers
+	'("\\*Message\\*"
+	  "Output\\*$"
+	  "\\*Async Shell Command\\*"
+	  ;; "\\*Buffer List\\*"
+	  Buffer-menu-mode
+	  help-mode
+	  compilation-mode))
+  (popper-mode +1)
+  (popper-echo-mode +1))
+
+;;
+;; (@* "Document" )
+;;
+
+(use-package eldoc-box
+  :bind ("M-h" . eldoc-box-help-at-point))
+
+;;
+;; (@* "Dictionary and Translater" )
+;;
+
+;; TODO: Replace to builtin `vc-use-package' if it exist.
+(use-package immersive-translate
+  :quelpa (immersive-translate :fetcher github :repo "Elilif/emacs-immersive-translate")
+  :custom (immersive-translate-backend 'trans))
 
 (provide 'tools)
 ;;; tools.el ends here

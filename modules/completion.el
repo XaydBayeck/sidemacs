@@ -35,6 +35,11 @@
   (completion-cycle-threshold 1)
   (tab-always-indent 'complete)
   :hook (prog-mode . global-corfu-mode)
+  :functions
+  corfu-popupinfo-mode
+  completion--org-return
+  :commands
+  corfu-insert
   :bind
   (:map corfu-map
         ("M-SPC" . corfu-insert-separator)
@@ -46,7 +51,7 @@
 	("M-p" . corfu-popupinfo-scroll-down))
   :config
   (add-hook 'corfu-mode-hook #'corfu-popupinfo-mode)
-  (setq corfu-popupinfo-delay 0.1)
+  (setopt corfu-popupinfo-delay 0.1)
 
   ;; Dirty hack to get c completion running
   ;; Discussion in https://github.com/minad/corfu/issues/34
@@ -63,10 +68,15 @@
 
 (use-package kind-icon
   :demand t
-  :ensure t
   :after corfu
   :custom
   (kind-icon-default-face 'corfu-default)
+  :functions
+  kind-icon-reset-cache
+  kind-icon-margin-formatter
+  :commands
+  kind-icon-reset-cache
+  kind-icon-margin-formatter
   :config
   (let ((local-cache-dir (concat user-emacs-directory ".local/cache/")))
     (setq kind-icon-use-icons t
@@ -137,11 +147,12 @@
 
 (use-package corfu-history
   :after corfu
+  :commands corfu-history-mode
+  :defines savehist-additional-variables
   :hook (corfu-mode . (lambda ()
                         (corfu-history-mode 1)
                         (savehist-mode 1)
                         (add-to-list 'savehist-additional-variables 'corfu-history))))
-
 
 (use-package corfu-quick
   :after corfu
@@ -156,6 +167,9 @@
 
 (use-package vertico
   :ensure t
+  :commands vertico-mode
+  :defines crm-separator
+  :functions completion-crm-indicator
   :init
   (vertico-mode)
 ;; Add prompt indicator to `completing-read-multiple'.
@@ -260,9 +274,17 @@
   ;; Enable automatic preview at point in the *Completions* buffer. This is
   ;; relevant when you use the default completion UI.
   :hook (completion-list-mode . consult-preview-at-point-mode)
-
+  :functions
+  consult-register-format
+  consult-register-window
+  consult-xref
+  :commands
+  consult--customize-put
+  consult--default-project-function
+  consult-narrow-help
   ;; The :init configuration is always executed (Not lazy)
   :init
+  (require 'consult-xref)
 
   ;; Optionally configure the register formatting. This improves the register
   ;; preview for `consult-register', `consult-register-load',
@@ -275,8 +297,8 @@
   (advice-add #'register-preview :override #'consult-register-window)
 
   ;; Use Consult to select xref locations with preview
-  (setq xref-show-xrefs-function #'consult-xref
-        xref-show-definitions-function #'consult-xref)
+  (setopt xref-show-xrefs-function #'consult-xref
+          xref-show-definitions-function #'consult-xref)
 
   ;; Configure other variables and modes in the :config section,
   ;; after lazily loading the package.
@@ -309,7 +331,7 @@
   ;; By default `consult-project-function' uses `project-root' from project.el.
   ;; Optionally configure a different project root function.
   ;;;; 1. project.el (the default)
-  ;; (setq consult-project-function #'consult--default-project--function)
+  (setq consult-project-function #'consult--default-project-function)
   ;;;; 4. projectile.el (projectile-project-root)
   ;; (autoload 'projectile-project-root "projectile")
   ;; (setq consult-project-function (lambda (_) (projectile-project-root)))
@@ -319,13 +341,14 @@
 
 (use-package marginalia
   :ensure t
+  :commands marginalia-mode
   :init
   (marginalia-mode)
   :bind (:map minibuffer-local-map
 	      ("M-A" . marginalia-cycle)))
 
 (use-package embark
-  :ensure t
+  :commands (embark-prefix-help-command embark-eldoc-first-target)
   :bind
   (("C-." . embark-act)
    ("C-;" . embark-dwim)
@@ -340,7 +363,6 @@
 		 (window-parameters (mode-line-format . none)))))
 
 (use-package embark-consult
-  :ensure t
   :hook
   (embark-collect-mode . consult-preview-at-point-mode))
 
@@ -350,12 +372,11 @@
 
 ;; Configure Tempel
 (use-package tempel
-  :ensure t
   ;; Require trigger prefix before template name when completing.
   :custom
   ;; (tempel-trigger-prefix "<")
   (tempel-path (concat user-emacs-directory "tempels"))
-
+  :commands tempel-expand
   :bind (("S-SPC" . tempel-complete) ;; Alternative tempel-expand
          ("S-RET" . tempel-insert)
 	 :map tempel-map
@@ -389,9 +410,7 @@
 
 ;; Optional: Add tempel-collection.
 ;; The package is young and doesn't have comprehensive coverage.
-(use-package tempel-collection
-  :ensure t
-  :after temple)
+(use-package tempel-collection :after temple)
 
 (provide 'completion)
 ;;; completion.el ends here

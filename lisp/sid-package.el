@@ -31,12 +31,18 @@
 ;; (@* "Packages" )
 ;;
 
-(setq use-package-always-defer t
-      use-package-expand-minimally t)
+(setopt use-package-always-defer t
+	use-package-always-ensure t
+	use-package-ensure-function 'quelpa
+	use-package-expand-minimally t)
 
 (use-package async
-  :ensure t
-  :init (async-bytecomp-package-mode 1))
+  :hook (package-refresh-contents . async-bytecomp-package-mode))
+
+;; TODO: Replace to builtin `vc-use-package' if it exist.
+(use-package quelpa-use-package :demand t
+  :hook (after-init . quelpa-upgrade-all-maybe)
+  :custom (quelpa-upgrade-interval 7))
 
 (provide 'sid-package)
 ;;; sid-package.el ends here
