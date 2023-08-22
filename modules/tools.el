@@ -28,17 +28,17 @@
 ;; (@* "Version Control" )
 ;;
 
-(use-package magit :ensure t)
+(use-package magit)
 
 ;;
 ;; (@* "Tree-Sitter" )
 ;;
 
 (use-package treesit
+  :ensure nil
   :custom (treesit-font-lock-level 4))
 
 (use-package treesit-auto
-  :ensure t
   :demand t
   :commands (global-treesit-auto-mode treesit-auto-mode)
   ;; TODO: Add emacs-lisp-ts-mode
@@ -64,7 +64,6 @@
 ;;
 
 (use-package rainbow-delimiters
-  :ensure t
   :hook (prog-mode . rainbow-delimiters-mode))
 
 ;;
@@ -72,7 +71,6 @@
 ;;
 
 (use-package hl-todo
-  :ensure t
   :hook (prog-mode . hl-todo-mode)
   :hook (yaml-ts-mode . hl-todo-mode)
   :config
@@ -105,7 +103,6 @@
 ;;
 
 (use-package treemacs
-  :ensure t
   :commands (treemacs-follow-mode)
   :init
   (let ((cache-dir (concat user-emacs-directory ".local/cache/")))
@@ -127,19 +124,16 @@
   (treemacs-follow-mode -1))
 
 (use-package treemacs-magit
-  :after (treemacs magit)
-  :ensure t)
+  :after (treemacs magit))
 
 (use-package treemacs-icons-dired
-  :hook (dired-mode . treemacs-icons-dired-enable-once)
-  :ensure t)
+  :hook (dired-mode . treemacs-icons-dired-enable-once))
 
 ;;
 ;; (@* "Popper" )
 ;;
 
 (use-package popper
-  :ensure t
   :commands (popper-mode popper-echo-mode)
   :bind (("C-'" . popper-toggle-latest)
 	 ("M-'" . popper-cycle)
@@ -169,8 +163,8 @@
 
 ;; TODO: Replace to builtin `vc-use-package' if it exist.
 (use-package immersive-translate
-  :quelpa (immersive-translate :fetcher github :repo "Elilif/emacs-immersive-translate")
-  :custom (immersive-translate-backend 'trans))
+ :vc (immersive-translate :fetcher github :repo "Elilif/emacs-immersive-translate")
+ :custom (immersive-translate-backend 'trans))
 
 (provide 'tools)
 ;;; tools.el ends here

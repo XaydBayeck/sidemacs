@@ -25,6 +25,7 @@
 (require 'editor)
 (require 'tools)
 (require 'langs)
+(require 'mail)
 
 (provide 'sid-modules)
 ;;; sid-modules.el ends here

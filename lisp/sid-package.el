@@ -33,16 +33,19 @@
 
 (setopt use-package-always-defer t
 	use-package-always-ensure t
-	use-package-ensure-function 'quelpa
+	;; use-package-ensure-function 'quelpa
 	use-package-expand-minimally t)
 
 (use-package async
   :hook (package-refresh-contents . async-bytecomp-package-mode))
 
 ;; TODO: Replace to builtin `vc-use-package' if it exist.
-(use-package quelpa-use-package :demand t
-  :hook (after-init . quelpa-upgrade-all-maybe)
-  :custom (quelpa-upgrade-interval 7))
+;; (unless (package-installed-p 'vc-use-package)
+;;   (package-vc-install "https://github.com/slotThe/vc-use-package"))
+(require 'vc-use-package)
+;; TODO: Use vc-use-package to manage vc-use-package
+;; (use-package vc-use-package
+;;   :vc (vc-use-package :fetcher github :repo "slotThe/vc-use-package"))
 
 (provide 'sid-package)
 ;;; sid-package.el ends here

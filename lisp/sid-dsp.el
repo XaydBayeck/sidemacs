@@ -33,7 +33,6 @@
 	doom-modeline-mu4e nil
 	doom-modeline-persp-name nil
 	doom-modeline-minor-modes nil
-	doom-modeline-major-mode-icon nil
 	doom-modeline-buffer-file-name-style 'relative-from-project
 	doom-modeline-buffer-encoding 'nondefault))
 
@@ -62,7 +61,8 @@
   (setopt doom-themes-treemacs-theme "doom-atom") ; use "doom-colors" for less minimal icon theme
   (doom-themes-treemacs-config)
   ;; Corrects (and improves) org-mode's native fontification.
-  (doom-themes-org-config))
+  (doom-themes-org-config)
+  (setq-default line-spacing 2))
 
 ;;
 ;; (@* "Tab bar" )
@@ -84,14 +84,25 @@
                         nil
                         :font "Hurmit Nerd Font Mono"
                         :height 120)
-
+    (set-face-attribute 'fixed-pitch-serif
+			nil
+			:font "Noto Serif")
+    ;; Variable-pitch
+    (set-face-attribute 'variable-pitch
+                        nil
+                        :font "Hurmit Nerd Font Mono"
+                        :height 120)
     ;; CJK fonts
-    (set-fontset-font t 'han (font-spec :family "Noto Serif CJK SC" :weight 'semi-bold :slant 'normal))
+    (set-fontset-font t 'han (font-spec :family "霞鹜文楷等宽" :foundry "LXGW" :weight 'bold :slant 'normal :size 15))
+    ;; TODO: Set JP font
     (set-fontset-font t 'kana (font-spec :family "Noto Serif CJK JP" :weight 'semi-bold :slant 'normal))
     ;;Unicode
     (set-fontset-font t 'unicode (font-spec :family "Symbola" :weight 'bold) nil 'prepend)
+    (set-fontset-font t 'unicode (font-spec :family "JetBrainsMono Nerd Font" :weight 'bold) nil 'prepend)
     ;; Emoji
     (set-fontset-font t 'symbol (font-spec :family "Noto Color Emoji") nil 'prepend))
+
+;; (use-package mixed-pitch :hook (tex-mode . mixed-pitch-mode))
 
 (use-package all-the-icons
   :ensure t
@@ -112,7 +123,7 @@
 ;; (@* "Alpha background" )
 ;;
 
-(set-frame-parameter nil 'alpha-background 80)
+(set-frame-parameter nil 'alpha-background 96)
 
 (setq fancy-splash-image (expand-file-name "~/Pictures/oldensignal.xpm"))
 
@@ -126,17 +137,114 @@
 	
 (global-prettify-symbols-mode 1)
 
-;; (use-package valign
-;;   :ensure t
-;;   :commands valign-mode
-;;   :hook (org-mode . valign-mode)
-;;   :config
-;;   (setopt valign-fancy-bar t))
 
 (use-package org-modern
-  :ensure t
   :hook (org-mode . org-modern-mode)
-  :hook (org-agenda-finalize . org-modern-agenda))
+  :hook (org-agenda-finalize . org-modern-agenda)
+  :custom
+  (org-modern-star '("✙" "♱" "♰" "☥" "✞" "✟" "✝" "†" "✠" "✚" "✜" "✛" "✢" "✣" "✤" "✥"))
+  ;; REVIEW inhibit it in math enviroment.
+  (org-pretty-entities t)
+  ;; (org-startup-indented t)
+  (org-hide-emphasis-markers t)
+  (org-hide-leading-stars t)
+  (org-image-actual-width '(800))
+  (org-startup-with-inline-images t)
+  (org-modern-block-fringe nil)
+  (org-modern-block-name '("»" . "»"))
+  (org-modern-keyword
+   '(("title" . "§")
+     ("author" . "")
+     ("subtitle" . "‡")
+     ("options" . "")
+     ("html" . "")
+     ("filetags" . "")
+     (t . t)))
+  :custom-face
+  (org-document-title ((t (:height 2.0))))
+  (org-level-1 ((t (:height 1.4))))
+  (org-level-2 ((t (:height 1.3))))
+  (org-level-3 ((t (:height 1.22))))
+  (org-level-4 ((t (:height 1.16))))
+  (org-level-5 ((t (:height 1.10))))
+  (org-level-6 ((t (:height 1.06))))
+  (org-level-7 ((t (:height 1.04))))
+  (org-level-8 ((t (:height 1.02))))
+  :hook (org-mode . (lambda ()
+		      (setq-local line-spacing 2)
+		      (visual-line-mode))))
+
+(use-package org-appear
+  :hook (org-mode . org-appear-mode)
+  :custom
+  (org-appear-autoemphasis t)
+  (org-appear-autolinks t)
+  (org-appear-autosubmarkers t)
+  (org-appear-autoentities t)
+  ;; (org-appear-autokeywords t)
+  (org-appear-inside-latex t)
+  )
+
+;; (use-package visual-fill-column
+;;   :custom (visual-fill-column-width 88)
+;;   :hook (visual-line-mode . visual-fill-column-mode)
+;;   :config (setq-default visual-fill-column-center-text t))
+
+(use-package olivetti
+  :hook
+  (org-mode . olivetti-mode)
+  (Custom-mode . olivetti-mode)
+  (help-mode . olivetti-mode)
+  (Info-mode . olivetti-mode)
+  (olivetti-mode . visual-line-mode)
+  :init
+  (setq-default fill-column 74)
+  :custom
+  (olivetti-body-width nil)
+  (olivetti-style 'fancy)
+  :custom-face
+  (olivetti-fringe ((t (:background "#121418")))))
+
+;; 
+;; (@* "Latex viewer" )
+;; 
+
+(use-package aio)
+(use-package xenops
+  :after aio
+  :functions
+  (eli/xenops-justify-fragment-overlay
+   image-display-size)
+  :config
+  (plist-put org-format-latex-options :justify 'center)
+  (defun eli/xenops-justify-fragment-overlay (element &rest _args)
+    "Place xenops' overlays by keyword: `:justify' of `org-format-latex-options'"
+    (let* ((ov-beg (plist-get element :begin))
+           (ov-end (plist-get element :end))
+           (ov (car (overlays-at (/ (+ ov-beg ov-end) 2) t)))
+           (position (plist-get org-format-latex-options :justify))
+           (inline-p (eq 'inline-math (plist-get element :type)))
+           width offset)
+      (when (and ov
+                 (imagep (overlay-get ov 'display)))
+        (setq width (car (image-display-size (overlay-get ov 'display))))
+        (cond
+         ((and (eq 'center position)
+               (not inline-p))
+          (setq offset (floor (- (/ fill-column 2)
+                                 (/ width 2))))
+          (if (< offset 0)
+              (setq offset 0))
+          (overlay-put ov 'before-string (make-string offset ? )))
+         ((and (eq 'right position)
+               (not inline-p))
+          (setq offset (floor (- fill-column
+                                 width)))
+          (if (< offset 0)
+              (setq offset 0))
+          (overlay-put ov 'before-string (make-string offset ? )))))))
+  (advice-add 'xenops-math-display-image :after
+              #'eli/xenops-justify-fragment-overlay))
 
 (provide 'sid-dsp)
 ;;; sid-dsp.el ends here

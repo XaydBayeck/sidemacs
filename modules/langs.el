@@ -62,6 +62,7 @@
 ;;
 
 (use-package lisp-mode
+  :ensure nil
   :config
   (load (expand-file-name "~/.roswell/helper.el"))
   (add-hook 'lisp-mode-hook (add-prettify-symbols '(("defun" . ?⨐)

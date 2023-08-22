@@ -39,6 +39,8 @@
     (meow-motion-overwrite-define-key
      '("j" . meow-next)
      '("k" . meow-prev)
+     '("l" . meow-right)
+     '("h" . meow-left)
      '("<escape>" . ignore))
     (meow-leader-define-key
      ;; SPC j/k will run the original command in MOTION state.
@@ -147,8 +149,30 @@
   :custom-face
   (flymake-posframe-background-face ((t (:inherit error))))
   (flymake-posframe-foreground-face ((t (:inherit custom-invalid)))))
-  ;; (flymake-posframe-background-face ((t (:inherit custom-invalid))))
-  ;; (flymake-posframe-foreground-face ((t (:inherit custom-invalid)))))
+;; (flymake-posframe-background-face ((t (:inherit custom-invalid))))
+;; (flymake-posframe-foreground-face ((t (:inherit custom-invalid)))))
+
+;; 
+;; (@* "Pair" )
+;;
+
+;; (defun editor-org/electric-pair-inhibit-predicate (&rest _char)
+;;   "If the CHAR is after '_' or '^' it wont be paired."
+;;   (not (or (eq ?_ (char-before))
+;;       (eq ?^ (char-before)))))
+
+;; (add-hook
+;;  'org-mode-hook
+;;  (lambda () (setopt electric-pair-inhibit-predicate
+;; 	       (lambda (char) (or (editor-org/electric-pair-inhibit-predicate)
+;; 			     (electric-pair-conservative-inhibit char))))))
+
+(use-package centered-cursor-mode
+  :demand
+  :commands global-centered-cursor-mode
+  :init
+  ;; Optional, enables centered-cursor-mode in all buffers.
+  (global-centered-cursor-mode))
 
 (provide 'editor)
 ;;; editor.el ends here

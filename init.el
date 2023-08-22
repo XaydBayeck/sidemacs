@@ -121,11 +121,6 @@
 ;;; Others
 ;;; Custom
 
-(setq user-full-name "SidBayeck")
-(setq user-login-name "SidBayeck")
-(setq mail-host-address "outlook.com")
-(setq user-mail-address (concat user-login-name "@" mail-host-address))
-
 ;; (provide 'init)
 ;; local Variables
 ;; coding: utf-8

@@ -7,7 +7,7 @@
 ;; Created: 八月 19, 2023
 ;; Modified: 八月 19, 2023
 ;; Version: 0.0.1
-;; Keywords: abbrev bib c calendar comm convenience data docs emulations extensions faces files frames games hardware help hypermedia i18n internal languages lisp local maint mail matching mouse multimedia news outlines processes terminals tex tools unix vc wp
+;; Keywords: convenience extensions
 ;; Homepage: https://github.com/sid/completion
 ;; Package-Requires: ((emacs "29.1"))
 ;;
@@ -35,10 +35,12 @@
   (completion-cycle-threshold 1)
   (tab-always-indent 'complete)
   :hook (prog-mode . global-corfu-mode)
+  :hook (minibuffer-setup . corfu-enable-in-minibuffer)
   :functions
   corfu-popupinfo-mode
   completion--org-return
   :commands
+  corfu-mode
   corfu-insert
   :bind
   (:map corfu-map
@@ -48,7 +50,8 @@
         ("C-x C-k" . cape-dict)
         ("C-x C-f" . cape-file)
 	("M-n" . corfu-popupinfo-scroll-up)
-	("M-p" . corfu-popupinfo-scroll-down))
+	("M-p" . corfu-popupinfo-scroll-down)
+	("RET" . nil))
   :config
   (add-hook 'corfu-mode-hook #'corfu-popupinfo-mode)
   (setopt corfu-popupinfo-delay 0.1)
@@ -64,7 +67,15 @@
              (>= corfu--index 0))
         (corfu-insert)
       (funcall orig)))
-  (advice-add '+org/return :around #'completion--org-return))
+  (advice-add '+org/return :around #'completion--org-return)
+  ;; Completing in the minibuffer
+  (defun corfu-enable-in-minibuffer ()
+    "Enable Corfu in the minibuffer if `completion-at-point' is bound."
+    (when (where-is-internal #'completion-at-point (list (current-local-map)))
+      ;; (setq-local corfu-auto nil) ;; Enable/disable auto completion
+      (setq-local corfu-echo-delay nil ;; Disable automatic echo and popup
+                  corfu-popupinfo-delay nil)
+      (corfu-mode 1))))
 
 (use-package kind-icon
   :demand t
@@ -117,9 +128,9 @@
   (add-hook 'doom-load-theme-hook #'kind-icon-reset-cache)
   (add-to-list 'corfu-margin-formatters #'kind-icon-margin-formatter))
 
+;; TODO: Various backend dispatched by different keybindings.
 (use-package cape
-  :demand t
-  :ensure t
+  :functions (cape-tex)
   :bind (([remap dabbrev-expand] . cape-dabbrev)
 	 ("C-c p p" . completion-at-point)
 	 ("C-c p t" . complete-tag)
@@ -135,8 +146,8 @@
 	 ("C-c p &" . cape-sgml)
 	 ("C-c p r" . cape-rfc1345))
   :init
-  ;; (add-hook 'latex-mode-hook (defun +corfu--latex-set-capfs ()
-                                ;; (add-to-list 'completion-at-point-functions #'cape-tex)))
+  (add-hook 'latex-mode-hook (defun +corfu--latex-set-capfs ()
+                                (add-to-list 'completion-at-point-functions #'cape-tex)))
   ;; (when (modulep! :checkers spell)
     ;; (add-to-list 'completion-at-point-functions #'cape-dict)
     ;; (add-to-list 'completion-at-point-functions #'cape-ispell))
@@ -144,8 +155,8 @@
   (add-to-list 'completion-at-point-functions #'cape-keyword t)
   (add-to-list 'completion-at-point-functions #'cape-dabbrev t))
 
-
 (use-package corfu-history
+  :ensure nil
   :after corfu
   :commands corfu-history-mode
   :defines savehist-additional-variables
@@ -155,11 +166,11 @@
                         (add-to-list 'savehist-additional-variables 'corfu-history))))
 
 (use-package corfu-quick
+  :ensure nil
   :after corfu
   :bind (:map corfu-map
          ("M-q" . corfu-quick-complete)
          ("C-q" . corfu-quick-insert)))
-
 
 ;;
 ;; (@* "Vertico" )
@@ -370,15 +381,17 @@
 ;; (@* "Snippet" )
 ;;
 
+
 ;; Configure Tempel
 (use-package tempel
   ;; Require trigger prefix before template name when completing.
   :custom
-  ;; (tempel-trigger-prefix "<")
-  (tempel-path (concat user-emacs-directory "tempels"))
+  ;; (tempel-trigger-prefix ">")
+  (tempel-path (concat user-emacs-directory "tempels.eld"))
   :commands tempel-expand
-  :bind (("S-SPC" . tempel-complete) ;; Alternative tempel-expand
-         ("S-RET" . tempel-insert)
+  :bind (("M-SPC" . tempel-expand)
+	 ("S-SPC" . tempel-complete) ;; Alternative tempel-expand
+         ("C-<return>" . tempel-insert)
 	 :map tempel-map
 	 ("M-]" . tempel-next)
 	 ("M-[" . tempel-previous))
@@ -395,8 +408,8 @@
     ;; `tempel-expand' *before* the main programming mode Capf, such
     ;; that it will be tried first.
     (setq-local completion-at-point-functions
-                (cons #'tempel-expand
-                      completion-at-point-functions)))
+                (append (list #'tempel-complete #'tempel-expand)
+			completion-at-point-functions)))
 
   (add-hook 'conf-mode-hook 'tempel-setup-capf)
   (add-hook 'prog-mode-hook 'tempel-setup-capf)
@@ -406,7 +419,7 @@
   ;; either locally or globally. `expand-abbrev' is bound to C-x '.
   ;; (add-hook 'prog-mode-hook #'tempel-abbrev-mode)
   ;; (global-tempel-abbrev-mode)
-)
+  )
 
 ;; Optional: Add tempel-collection.
 ;; The package is young and doesn't have comprehensive coverage.
