@@ -102,13 +102,13 @@
 ;;     (setenv "PATH" path-from-shell)
 ;;     (setq exec-path (split-string path-from-shell path-separator))))
 
-;; (set-exec-path-from-shell-PATH)
-(setenv "PATH"
-	(concat
-	 "/home/sid/.cabal/bin" path-separator
-	 "/home/sid/.ghcup/bin" path-separator
-	 (getenv "PATH")))
-(setq exec-path (split-string (getenv "PATH") path-separator))
+;; ;; (set-exec-path-from-shell-PATH)
+;; (setenv "PATH"
+;; 	(concat
+;; 	 "/home/sid/.cabal/bin" path-separator
+;; 	 "/home/sid/.ghcup/bin" path-separator
+;; 	 (getenv "PATH")))
+;; (setq exec-path (split-string (getenv "PATH") path-separator))
 
 ;;; Initialize
 (require 'sid-package)
@@ -125,7 +125,7 @@
 ;; (@* "Dev" )
 ;;
 
-(add-to-list 'load-path (expand-file-name "~/Github/emacs-modules/tree-editor/"))
+;(add-to-list 'load-path (expand-file-name "~/Github/emacs-modules/tree-editor/"))
 
 ;; (provide 'init)
 ;; local Variables

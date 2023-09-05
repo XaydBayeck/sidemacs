@@ -83,7 +83,7 @@
                         :height 120)
     (set-face-attribute 'fixed-pitch-serif
 			nil
-			:font "Noto Serif")
+			:font "NotoSerif Nerd Font")
     ;; Variable-pitch
     (set-face-attribute 'variable-pitch
                         nil
@@ -93,7 +93,7 @@
     (set-fontset-font t 'han (font-spec :family "霞鹜文楷等宽" :foundry "LXGW" :weight 'bold :slant 'normal))
     (add-to-list 'face-font-rescale-alist '("霞鹜文楷等宽" . 1.18))
     ;; TODO: Set JP font
-    (set-fontset-font t 'kana (font-spec :family "Noto Serif CJK JP" :weight 'semi-bold :slant 'normal))
+    ;(set-fontset-font t 'kana (font-spec :family "Noto Serif CJK JP" :weight 'semi-bold :slant 'normal))
     ;;Unicode
     (set-fontset-font t 'unicode (font-spec :family "JetBrainsMono Nerd Font" :weight 'bold) nil 'prepend)
     (set-fontset-font t 'unicode-bmp (font-spec :family "JetBrainsMono Nerd Font" :weight 'bold) nil 'prepend)

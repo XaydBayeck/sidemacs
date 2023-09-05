@@ -162,7 +162,7 @@
 ;; (@* "Dictionary and Translater" )
 ;;
 
-;; TODO: Replace to builtin `vc-use-package' if it exist.
+;; DONE: Replace to builtin `vc-use-package' if it exist.
 (use-package immersive-translate
  :vc (:fetcher github :repo "Elilif/emacs-immersive-translate")
  :custom (immersive-translate-backend 'trans))

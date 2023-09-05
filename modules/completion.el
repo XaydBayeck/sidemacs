@@ -217,7 +217,7 @@
   (rfn-eshadow-update-overlay . vertico-directory-tidy)
   (minibuffer-setup . vertico-repeat-save))
 
-(use-package savehist :init (savehist-mode))
+;(use-package savehist :init (savehist-mode))
 
 (use-package orderless
   :demand t

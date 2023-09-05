@@ -40,8 +40,8 @@
   :hook (package-refresh-contents . async-bytecomp-package-mode))
 
 ;; TODO: Replace to builtin `vc-use-package' if it exist.
-;; (unless (package-installed-p 'vc-use-package)
- ;; (package-vc-install "https://github.com/slotThe/vc-use-package"))
+(unless (package-installed-p 'vc-use-package)
+ (package-vc-install "https://github.com/slotThe/vc-use-package"))
 (require 'vc-use-package)
 ;; TODO: Use vc-use-package to manage vc-use-package
 ;(use-package vc-use-package

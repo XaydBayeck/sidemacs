@@ -71,7 +71,7 @@
 (use-package sly
   :ensure t
   :config
-  (setq inferior-lisp-program "ros -Q run")
+  ;(setq inferior-lisp-program "ros -Q run")
   (add-hook 'sly-mrepl-hook (add-prettify-symbols '(("defun" . ?⨐)
 						    ("nil" . ?∅)))))
 
@@ -80,11 +80,11 @@
 ;;
 
 (use-package geiser-guile :ensure t)
-(use-package geiser-chez :ensure t :custom (geiser-chez-binary "chez"))
-(use-package geiser-racket)
-(use-package racket-mode
-  :hook (racket-mode . 'racket-unicode-input-method-enable)
-  :hook (racket-repl-mode . 'racket-unicode-input-method-enable))
+;(use-package geiser-chez :ensure t :custom (geiser-chez-binary "chez"))
+;(use-package geiser-racket)
+;(use-package racket-mode
+  ;:hook (racket-mode . 'racket-unicode-input-method-enable)
+  ;:hook (racket-repl-mode . 'racket-unicode-input-method-enable))
 
 ;;
 ;; (@* "Haskell" )

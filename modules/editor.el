@@ -148,13 +148,13 @@
 (setq elisp-flymake-byte-compile-load-path
       (append elisp-flymake-byte-compile-load-path load-path))
 
-(use-package flymake-posframe
-  :load-path "modules/"
-  :commands flymake-posframe-mode
-  :hook (flymake-mode . flymake-posframe-mode)
-  :custom-face
-  (flymake-posframe-background-face ((t (:inherit error))))
-  (flymake-posframe-foreground-face ((t (:inherit custom-invalid)))))
+;(use-package flymake-posframe
+;  :load-path "modules/"
+;  :commands flymake-posframe-mode
+;  :hook (flymake-mode . flymake-posframe-mode)
+;  :custom-face
+;  (flymake-posframe-background-face ((t (:inherit error))))
+;  (flymake-posframe-foreground-face ((t (:inherit custom-invalid)))))
 ;; (flymake-posframe-background-face ((t (:inherit custom-invalid))))
 ;; (flymake-posframe-foreground-face ((t (:inherit custom-invalid)))))
 
@@ -173,8 +173,8 @@
 ;; 	       (lambda (char) (or (editor-org/electric-pair-inhibit-predicate)
 ;; 			     (electric-pair-conservative-inhibit char))))))
 
-(use-package centered-cursor-mode
-  :bind (([remap screen-lock-mode] . centered-cursor-mode)))
+;(use-package centered-cursor-mode
+;  :bind (([remap screen-lock-mode] . centered-cursor-mode)))
 
 ;; 
 ;; (@* "Structure Editor" )
