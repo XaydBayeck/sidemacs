@@ -11,13 +11,11 @@
 ;;
 
 (use-package minions
-  :ensure t
   :init
   (setq minions-mode-line-delimiters nil
            minions-mode-line-lighter ""))
 
 (use-package doom-modeline
-  :ensure t
   :hook (after-init . doom-modeline-mode)
   :hook (doom-modeline-mode . size-indication-mode)
   :hook (doom-modeline-mode . column-number-mode)
@@ -41,9 +39,8 @@
 ;;
 
 (use-package doom-themes
-  :demand t
-  :ensure t
-  :commands
+  :defer nil
+  :functions
   (doom-themes-visual-bell-config
    doom-themes-treemacs-config
    doom-themes-org-config)
@@ -76,13 +73,13 @@
     ;; Set default font
     (set-face-attribute 'default
                         nil
-                        :font "Hurmit Nerd Font Mono"
+                        :font "CaskaydiaCove Nerd Font"
                         :height 120)
 
     ;; Fixed-pitch (monospaced) fonts 等宽字体
     (set-face-attribute 'fixed-pitch
                         nil
-                        :font "Hurmit Nerd Font Mono"
+                        :font "CaskaydiaCove Nerd Font"
                         :height 120)
     (set-face-attribute 'fixed-pitch-serif
 			nil
@@ -93,19 +90,50 @@
                         :font "Hurmit Nerd Font Mono"
                         :height 120)
     ;; CJK fonts
-    (set-fontset-font t 'han (font-spec :family "霞鹜文楷等宽" :foundry "LXGW" :weight 'bold :slant 'normal :size 15))
+    (set-fontset-font t 'han (font-spec :family "霞鹜文楷等宽" :foundry "LXGW" :weight 'bold :slant 'normal))
+    (add-to-list 'face-font-rescale-alist '("霞鹜文楷等宽" . 1.18))
     ;; TODO: Set JP font
     (set-fontset-font t 'kana (font-spec :family "Noto Serif CJK JP" :weight 'semi-bold :slant 'normal))
     ;;Unicode
-    (set-fontset-font t 'unicode (font-spec :family "Symbola" :weight 'bold) nil 'prepend)
     (set-fontset-font t 'unicode (font-spec :family "JetBrainsMono Nerd Font" :weight 'bold) nil 'prepend)
+    (set-fontset-font t 'unicode-bmp (font-spec :family "JetBrainsMono Nerd Font" :weight 'bold) nil 'prepend)
+    (set-fontset-font t 'unicode (font-spec :family "Symbola" :weight 'bold) nil 'prepend)
     ;; Emoji
     (set-fontset-font t 'symbol (font-spec :family "Noto Color Emoji") nil 'prepend))
+
+
+;; ligture.el
+(use-package ligature
+  :commands global-ligature-mode
+  :functions ligature-set-ligatures
+  :config
+  ;; Enable the "www" ligature in every possible major mode
+  (ligature-set-ligatures 't '("www"))
+  ;; Enable traditional ligature support in eww-mode, if the
+  ;; `variable-pitch' face supports it
+  (ligature-set-ligatures 'eww-mode '("ff" "fi" "ffi"))
+  ;; Enable all Cascadia Code ligatures in programming modes
+  (ligature-set-ligatures 'prog-mode '("|||>" "<|||" "<==>" "<!--" "####" "~~>" "***" "||=" "||>"
+                                       ":::" "::=" "=:=" "===" "==>" "=!=" "=>>" "=<<" "=/=" "!=="
+                                       "!!." ">=>" ">>=" ">>>" ">>-" ">->" "->>" "-->" "---" "-<<"
+                                       "<~~" "<~>" "<*>" "<||" "<|>" "<$>" "<==" "<=>" "<=<" "<->"
+                                       "<--" "<-<" "<<=" "<<-" "<<<" "<+>" "</>" "###" "#_(" "..<"
+                                       "..." "+++" "/==" "///" "_|_" "www" "&&" "^=" "~~" "~@" "~="
+                                       "~>" "~-" "**" "*>" "*/" "||" "|}" "|]" "|=" "|>" "|-" "{|"
+                                       "[|" "]#" "::" ":=" ":>" ":<" "$>" "==" "=>" "!=" "!!" ">:"
+                                       ">=" ">>" ">-" "-~" "-|" "->" "--" "-<" "<~" "<*" "<|" "<:"
+                                       "<$" "<=" "<>" "<-" "<<" "<+" "</" "#{" "#[" "#:" "#=" "#!"
+                                       "##" "#(" "#?" "#_" "%%" ".=" ".-" ".." ".?" "+>" "++" "?:"
+                                       "?=" "?." "??" ";;" "/*" "/=" "/>" "//" "__" "~~" "(*" "*)"
+                                       "\\\\" "://"))
+  ;; Enables ligature checks globally in all buffers. You can also do it
+  ;; per mode with `ligature-mode'.
+  :init
+  (global-ligature-mode t))
 
 ;; (use-package mixed-pitch :hook (tex-mode . mixed-pitch-mode))
 
 (use-package all-the-icons
-  :ensure t
   :if (display-graphic-p))
 
 ;;
@@ -118,6 +146,9 @@
 (electric-pair-mode t)
 (setopt electric-pair-inhibit-predicate 'electric-pair-conservative-inhibit)
 (show-paren-mode t)
+
+;; highligh current line
+(add-hook 'prog-mode-hook #'hl-line-mode)
 
 ;;
 ;; (@* "Alpha background" )
@@ -150,7 +181,7 @@
   (org-hide-leading-stars t)
   (org-image-actual-width '(800))
   (org-startup-with-inline-images t)
-  (org-modern-block-fringe nil)
+  ;; (org-modern-block-fringe nil)
   (org-modern-block-name '("»" . "»"))
   (org-modern-keyword
    '(("title" . "§")
@@ -172,7 +203,9 @@
   (org-level-8 ((t (:height 1.02))))
   :hook (org-mode . (lambda ()
 		      (setq-local line-spacing 2)
-		      (visual-line-mode))))
+		      (visual-line-mode)))
+  :config
+  (add-to-list 'org-emphasis-alist '("!" (:overline t) verbatim)))
 
 (use-package org-appear
   :hook (org-mode . org-appear-mode)
@@ -200,10 +233,7 @@
   :init
   (setq-default fill-column 74)
   :custom
-  (olivetti-body-width nil)
-  (olivetti-style 'fancy)
-  :custom-face
-  (olivetti-fringe ((t (:background "#121418")))))
+  (olivetti-body-width nil))
 
 ;; 
 ;; (@* "Latex viewer" )

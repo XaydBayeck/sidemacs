@@ -1,9 +1,9 @@
-;;; const.el --- Constants use for self configurations.  -*- lexical-binding: t; -*-
+;;; sid-org.el --- Sid's org-mode configurations.    -*- lexical-binding: t; -*-
 
 ;; Copyright (C) 2023  SidBayeck
 
 ;; Author: SidBayeck <SidBayeck@outlook.com>
-;; Keywords: convenience
+;; Keywords: outlines
 
 ;; This program is free software; you can redistribute it and/or modify
 ;; it under the terms of the GNU General Public License as published by
@@ -20,23 +20,11 @@
 
 ;;; Commentary:
 
-;; Constants use for self configurations.
+;; Sid's org-mode configurations.
 
 ;;; Code:
 
-(defconst basic-prettify-symbols
-      '(("lambda" . ?λ)
-	("function" . ?⨐)
-	;; (">=" . ?≥)
-	;; ("<=" . ?≤)
-	;; ("==" . ?≡)
-	("in" . ?∈)
-	;; ("->" . ?→)
-	;; ("<-" . ?←)
-	;; ("=>" . ?⇒)
-	("pi" . ?π)
-	("return" . ?⮑))
-      "Basic symbol pairs for setting `prettify-symbols-alist'.")
 
-(provide 'const)
-;;; const.el ends here
+
+(provide 'sid-org)
+;;; sid-org.el ends here

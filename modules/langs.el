@@ -81,6 +81,10 @@
 
 (use-package geiser-guile :ensure t)
 (use-package geiser-chez :ensure t :custom (geiser-chez-binary "chez"))
+(use-package geiser-racket)
+(use-package racket-mode
+  :hook (racket-mode . 'racket-unicode-input-method-enable)
+  :hook (racket-repl-mode . 'racket-unicode-input-method-enable))
 
 ;;
 ;; (@* "Haskell" )
@@ -90,18 +94,7 @@
   :ensure t
   :hook (haskell-mode . eglot-ensure)
   :config
-  (setq-local eglot-connect-timeout 100)
-  (add-hook 'haskell-mode-hook (add-prettify-symbols '(("::" . ?∷)
-						       ("/=" . ?≠)
-						       ("sum" . ?∑)
-						       ("product" . ?∏)
-						       ("sqrt" . √)
-						       ("forall" . ?∀)
-						       (">>" . ?»)
-						       ("<>" . ?◇)
-						       ("\\" . ?λ)
-						       (" . "  . ?∘)
-						       (".." . ?‥)))))
+  (setq-local eglot-connect-timeout 100))
 
 (provide 'langs)
 ;;; langs.el ends here

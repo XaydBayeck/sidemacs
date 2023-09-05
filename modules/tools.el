@@ -143,6 +143,7 @@
 	'("\\*Message\\*"
 	  "Output\\*$"
 	  "\\*Async Shell Command\\*"
+	  "\\*Warnings\\*"
 	  ;; "\\*Buffer List\\*"
 	  Buffer-menu-mode
 	  help-mode
@@ -163,7 +164,7 @@
 
 ;; TODO: Replace to builtin `vc-use-package' if it exist.
 (use-package immersive-translate
- :vc (immersive-translate :fetcher github :repo "Elilif/emacs-immersive-translate")
+ :vc (:fetcher github :repo "Elilif/emacs-immersive-translate")
  :custom (immersive-translate-backend 'trans))
 
 (provide 'tools)

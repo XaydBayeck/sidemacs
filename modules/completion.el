@@ -24,7 +24,6 @@
 ;;
 
 (use-package corfu
-  :ensure t
   :custom
   (corfu-preview-current t)
   (corfu-auto t)
@@ -389,6 +388,7 @@
   ;; (tempel-trigger-prefix ">")
   (tempel-path (concat user-emacs-directory "tempels.eld"))
   :commands tempel-expand
+  :functions (tempel--templates tempel-include if-tempel)
   :bind (("M-SPC" . tempel-expand)
 	 ("S-SPC" . tempel-complete) ;; Alternative tempel-expand
          ("C-<return>" . tempel-insert)
@@ -419,7 +419,28 @@
   ;; either locally or globally. `expand-abbrev' is bound to C-x '.
   ;; (add-hook 'prog-mode-hook #'tempel-abbrev-mode)
   ;; (global-tempel-abbrev-mode)
-  )
+  :config
+  (defun tempel-include (elt)
+    "Include a template from ELT in current template."
+    (when (eq (car-safe elt) 'i)
+      (if-let (template (alist-get (cadr elt) (tempel--templates)))
+	  (cons 'l template)
+	(message "Template %s not found" (cadr elt))
+	nil)))
+  (add-to-list 'tempel-user-elements #'tempel-include)
+
+  (defun if-tempel (elt)
+    "If ELT's CONDITION is t return first template else nil or second template."
+    (when (eq (car-safe elt) 'if)
+      (let ((condition (cadr elt))
+	    (tm1 (caddr elt))
+	    (tm2 (cadddr elt)))
+	(if (eval condition)
+	    (tempel-include (list 'i tm1))
+	  (if (not (eq tm2 nil))
+	      (tempel-include (list 'i tm2))
+	    nil)))))
+  (add-to-list 'tempel-user-elements #'if-tempel))
 
 ;; Optional: Add tempel-collection.
 ;; The package is young and doesn't have comprehensive coverage.

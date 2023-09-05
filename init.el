@@ -121,6 +121,12 @@
 ;;; Others
 ;;; Custom
 
+;; 
+;; (@* "Dev" )
+;;
+
+(add-to-list 'load-path (expand-file-name "~/Github/emacs-modules/tree-editor/"))
+
 ;; (provide 'init)
 ;; local Variables
 ;; coding: utf-8

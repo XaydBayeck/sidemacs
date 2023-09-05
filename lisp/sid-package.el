@@ -12,13 +12,13 @@
 
 (add-to-list 'package-archives '("melpa" . "http://melpa.org/packages/"))
 (add-to-list 'package-archives '("org" . "http://orgmode.org/elpa/"))
-        ;; ("jcs-elpa" . "https://jcs-emacs.github.io/jcs-elpa/packages/")
+(add-to-list 'package-archives '("jcs-elpa" . "https://jcs-emacs.github.io/jcs-elpa/packages/"))
 (setq package-archive-priorities
       '(("gnu"       . 0)
         ("nongnu" . 0)
-        ;; ("jsc-elpa" 10)
         ("org"        . 0)
-        ("melpa"   . 5)))
+        ("melpa"   . 5)
+        ("jsc-elpa" 10)))
 
 (setq package-enable-at-startup nil ; To avoid initialization twice
      package-check-signature nil)
@@ -41,11 +41,13 @@
 
 ;; TODO: Replace to builtin `vc-use-package' if it exist.
 ;; (unless (package-installed-p 'vc-use-package)
-;;   (package-vc-install "https://github.com/slotThe/vc-use-package"))
+ ;; (package-vc-install "https://github.com/slotThe/vc-use-package"))
 (require 'vc-use-package)
 ;; TODO: Use vc-use-package to manage vc-use-package
-;; (use-package vc-use-package
-;;   :vc (vc-use-package :fetcher github :repo "slotThe/vc-use-package"))
+;(use-package vc-use-package
+;  :vc (:fetcher github :repo slotThe/vc-use-package))
+
+(use-package easky)
 
 (provide 'sid-package)
 ;;; sid-package.el ends here

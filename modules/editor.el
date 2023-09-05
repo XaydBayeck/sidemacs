@@ -26,12 +26,18 @@
 
 
 (use-package meow
-  :ensure t
-  :demand t
-  :commands (meow-mode meow-global-mode)
-  :functions (meow-setup)
-  :init (meow-global-mode)
-  :config
+  :defer nil
+  :commands
+  (meow-mode
+   meow-global-mode)
+  :functions
+  (meow-setup
+   meow-motion-overwrite-define-key
+   meow-leader-define-key
+   meow-normal-define-key)
+  :init
+  (meow-global-mode)
+  (require 'meow)
   (defun meow-setup ()
     "Setup meow mode keybindings."
     (setq meow-cheatsheet-layout meow-cheatsheet-layout-qwerty)
@@ -168,11 +174,89 @@
 ;; 			     (electric-pair-conservative-inhibit char))))))
 
 (use-package centered-cursor-mode
-  :demand
-  :commands global-centered-cursor-mode
-  :init
-  ;; Optional, enables centered-cursor-mode in all buffers.
-  (global-centered-cursor-mode))
+  :bind (([remap screen-lock-mode] . centered-cursor-mode)))
+
+;; 
+;; (@* "Structure Editor" )
+;;
+
+;; (use-package fingertip
+;;   :vc (:fetcher github :repo manateelazycat/fingertip)
+;;   :commands fingertip-mode
+;;   :init
+;;   (dolist (hook (list
+;; 		 'c-mode-common-hook
+;; 		 'c-mode-hook
+;; 		 'c++-mode-hook
+;; 		 'haskell-mode-hook
+;; 		 'emacs-lisp-mode-hook
+;; 		 'lisp-interaction-mode-hook
+;; 		 'lisp-mode-hook
+;; 		 'ielm-mode-hook
+;; 		 'sh-mode-hook
+;; 		 'python-mode-hook
+;; 		 'js-mode-hook
+;; 		 'css-mode-hook
+;; 		 'ruby-mode-hook
+;; 		 'rust-mode-hook
+;; 		 'rust-ts-mode-hook
+;; 		 'web-mode-hook
+;; 		 'markdown-mode-hook
+;; 		 'conf-toml-mode-hook
+;; 		 'typescript-mode-hook
+;; 		 'c-ts-mode-hook
+;; 		 'c++-ts-mode-hook
+;; 		 'toml-ts-mode-hook
+;; 		 'css-ts-mode-hook
+;; 		 'js-ts-mode-hook
+;; 		 'json-ts-mode-hook
+;; 		 'python-ts-mode-hook
+;; 		 'bash-ts-mode-hook
+;; 		 'typescript-ts-mode-hook
+;; 		 ))
+;;     (add-hook hook #'(lambda ()
+;; 		       (add-hook 'meow-insert-enter-hook #'(lambda () (fingertip-mode 1)))
+;; 		       (add-hook 'meow-insert-exit-hook #'(lambda () (fingertip-mode -1))))))
+;;   :bind (:map
+;; 	 fingertip-mode-map
+;; 	 ("(" . fingertip-open-round)
+;; 	 ("[" . 'fingertip-open-bracket)
+;; 	 ("{" . 'fingertip-open-curly)
+;; 	 (")" . 'fingertip-close-round)
+;; 	 ("]" . 'fingertip-close-bracket)
+;; 	 ("}" . 'fingertip-close-curly)
+;; 	 ("=" . 'fingertip-equal)
+	 
+	 ;; ("%" . 'fingertip-match-paren)
+	 ;; ("\"" . 'fingertip-double-quote)
+	 ;; ("'" . 'fingertip-single-quote)
+	 
+	 ;; ("SPC" . 'fingertip-space)
+	 ;; ("RET" . 'fingertip-newline)
+	 
+	 ;; ("C-o" . 'fingertip-backward-delete)
+	 ;; ("C-d" . 'fingertip-forward-delete)
+	 ;; ("C-k" . 'fingertip-kill)
+	 ;; ("C-a" . 'fingertip-wrap-round-pair)
+	 ;; ("M-\"" . 'fingertip-wrap-double-quote)
+	 ;; ("M-'" . 'fingertip-wrap-single-quote)
+	 ;; ("M-[" . 'fingertip-wrap-bracket)
+	 ;; ("M-{" . 'fingertip-wrap-curly)
+	 ;; ("M-(" . 'fingertip-wrap-round)
+	 ;; ("M-)" . 'fingertip-unwrap)
+	 ;; ("M-]" . 'fingertip-fix-unbalanced-parentheses)
+	 
+	 ;; ("M-n" . 'fingertip-jump-right)
+	 ;; ("M-p" . 'fingertip-jump-left)
+	 ;; ("M-RET" . 'fingertip-jump-out-pair-and-newline)
+
+	 ;; ("C-j" . 'fingertip-jump-up)))
+
+;; 
+;; (@* "Backup Directory" )
+;;
+
+(setq backup-directory-alist '("." . ".backups/"))
 
 (provide 'editor)
 ;;; editor.el ends here
