@@ -148,6 +148,18 @@
 (setq elisp-flymake-byte-compile-load-path
       (append elisp-flymake-byte-compile-load-path load-path))
 
+(use-package sideline-color)
+
+(use-package sideline
+  :hook (flymake-mode . sideline-mode)
+  :hook (prog-mode . sideline-mode)
+  :defines (sideline-flymake-display-mode)
+  :init
+  (setq sideline-flymake-display-mode 'point) ; 'point to show errors only on point
+					; 'line to show errors on the current line
+  (setq sideline-backends-left '(sideline-color))
+  (setq sideline-backends-right '(sideline-flymake)))
+
 ;(use-package flymake-posframe
 ;  :load-path "modules/"
 ;  :commands flymake-posframe-mode
@@ -256,7 +268,7 @@
 ;; (@* "Backup Directory" )
 ;;
 
-(setq backup-directory-alist '("." . ".backups/"))
+;(setq backup-directory-alist '("." . ".backups/"))
 
 (provide 'editor)
 ;;; editor.el ends here

@@ -64,12 +64,11 @@
 (use-package lisp-mode
   :ensure nil
   :config
-  (load (expand-file-name "~/.roswell/helper.el"))
+  ;(load (expand-file-name "~/.roswell/helper.el"))
   (add-hook 'lisp-mode-hook (add-prettify-symbols '(("defun" . ?⨐)
 						    ("nil" . ?∅)))))
 
 (use-package sly
-  :ensure t
   :config
   ;(setq inferior-lisp-program "ros -Q run")
   (add-hook 'sly-mrepl-hook (add-prettify-symbols '(("defun" . ?⨐)
@@ -91,10 +90,16 @@
 ;;
 
 (use-package haskell-mode
-  :ensure t
   :hook (haskell-mode . eglot-ensure)
   :config
   (setq-local eglot-connect-timeout 100))
+
+;; 
+;; (@* "Nix" )
+;;
+
+(use-package nix-mode
+  :hook (nix-mode . eglot-ensure))
 
 (provide 'langs)
 ;;; langs.el ends here

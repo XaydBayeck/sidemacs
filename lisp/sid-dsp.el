@@ -13,7 +13,17 @@
 (use-package minions
   :init
   (setq minions-mode-line-delimiters nil
-           minions-mode-line-lighter ""))
+        minions-mode-line-lighter ""))
+
+(use-package dashboard
+  :demand t
+  :commands (dashboard-setup-startup-hook)
+  :config
+  (dashboard-setup-startup-hook)
+  (setq dashboard-center-content t)
+  (setq dashboard-display-icons-p t) ;; display icons on both GUI and terminal
+  (setq dashboard-icon-type 'nerd-icons) ;; use `nerd-icons' package
+  (setq dashboard-set-init-info t))
 
 (use-package doom-modeline
   :hook (after-init . doom-modeline-mode)
@@ -95,11 +105,13 @@
     ;; TODO: Set JP font
     ;(set-fontset-font t 'kana (font-spec :family "Noto Serif CJK JP" :weight 'semi-bold :slant 'normal))
     ;;Unicode
-    (set-fontset-font t 'unicode (font-spec :family "JetBrainsMono Nerd Font" :weight 'bold) nil 'prepend)
-    (set-fontset-font t 'unicode-bmp (font-spec :family "JetBrainsMono Nerd Font" :weight 'bold) nil 'prepend)
-    (set-fontset-font t 'unicode (font-spec :family "Symbola" :weight 'bold) nil 'prepend)
+    (set-fontset-font t 'unicode (font-spec :family "Symbola") nil 'prepend)
+    (set-fontset-font t 'unicode-bmp (font-spec :family "Symbola") nil 'prepend)
+    ;; (set-fontset-font t 'unicode (font-spec :family "JetBrainsMono Nerd Font" :weight 'bold) nil 'prepend)
+    ;; (set-fontset-font t 'unicode-bmp (font-spec :family "JetBrainsMono Nerd Font" :weight 'bold) nil 'prepend)
     ;; Emoji
-    (set-fontset-font t 'symbol (font-spec :family "Noto Color Emoji") nil 'prepend))
+    (set-fontset-font t 'symbol (font-spec :family "Noto Color Emoji") nil 'prepend)
+    (set-fontset-font t 'symbol (font-spec :family "Symbola") nil 'prepend))
 
 
 ;; ligture.el
@@ -156,7 +168,7 @@
 
 (set-frame-parameter nil 'alpha-background 96)
 
-(setq fancy-splash-image (expand-file-name "~/Pictures/oldensignal.xpm"))
+;(setq fancy-splash-image (expand-file-name "~/Pictures/oldensignal.xpm"))
 
 ;;
 ;; (@* "Pretty" )
@@ -231,7 +243,7 @@
   (Info-mode . olivetti-mode)
   (olivetti-mode . visual-line-mode)
   :init
-  (setq-default fill-column 74)
+  (setq-default fill-column 84)
   :custom
   (olivetti-body-width nil))
 
@@ -239,42 +251,49 @@
 ;; (@* "Latex viewer" )
 ;; 
 
-(use-package aio)
-(use-package xenops
-  :after aio
-  :functions
-  (eli/xenops-justify-fragment-overlay
-   image-display-size)
+(use-package org-xlatex
+  :after (org)
+  :hook (org-mode . org-xlatex-mode)
   :config
-  (plist-put org-format-latex-options :justify 'center)
-  (defun eli/xenops-justify-fragment-overlay (element &rest _args)
-    "Place xenops' overlays by keyword: `:justify' of `org-format-latex-options'"
-    (let* ((ov-beg (plist-get element :begin))
-           (ov-end (plist-get element :end))
-           (ov (car (overlays-at (/ (+ ov-beg ov-end) 2) t)))
-           (position (plist-get org-format-latex-options :justify))
-           (inline-p (eq 'inline-math (plist-get element :type)))
-           width offset)
-      (when (and ov
-                 (imagep (overlay-get ov 'display)))
-        (setq width (car (image-display-size (overlay-get ov 'display))))
-        (cond
-         ((and (eq 'center position)
-               (not inline-p))
-          (setq offset (floor (- (/ fill-column 2)
-                                 (/ width 2))))
-          (if (< offset 0)
-              (setq offset 0))
-          (overlay-put ov 'before-string (make-string offset ? )))
-         ((and (eq 'right position)
-               (not inline-p))
-          (setq offset (floor (- fill-column
-                                 width)))
-          (if (< offset 0)
-              (setq offset 0))
-          (overlay-put ov 'before-string (make-string offset ? )))))))
-  (advice-add 'xenops-math-display-image :after
-              #'eli/xenops-justify-fragment-overlay))
+  (setopt org-xlatex--html-uri (concat "file://" user-emacs-directory "templates/org-xlatex.html" )))
+
+
+;; (use-package aio)
+;; ;; (use-package xenops
+;;   :after aio
+;;   :functions
+;;   (eli/xenops-justify-fragment-overlay
+;;    image-display-size)
+;;   :config
+;;   (plist-put org-format-latex-options :justify 'center)
+;;   (defun eli/xenops-justify-fragment-overlay (element &rest _args)
+;;     "Place xenops' overlays by keyword: `:justify' of `org-format-latex-options'"
+;;     (let* ((ov-beg (plist-get element :begin))
+;;            (ov-end (plist-get element :end))
+;;            (ov (car (overlays-at (/ (+ ov-beg ov-end) 2) t)))
+;;            (position (plist-get org-format-latex-options :justify))
+;;            (inline-p (eq 'inline-math (plist-get element :type)))
+;;            width offset)
+;;       (when (and ov
+;;                  (imagep (overlay-get ov 'display)))
+;;         (setq width (car (image-display-size (overlay-get ov 'display))))
+;;         (cond
+;;          ((and (eq 'center position)
+;;                (not inline-p))
+;;           (setq offset (floor (- (/ fill-column 2)
+;;                                  (/ width 2))))
+;;           (if (< offset 0)
+;;               (setq offset 0))
+;;           (overlay-put ov 'before-string (make-string offset ? )))
+;;          ((and (eq 'right position)
+;;                (not inline-p))
+;;           (setq offset (floor (- fill-column
+;;                                  width)))
+;;           (if (< offset 0)
+;;               (setq offset 0))
+;;           (overlay-put ov 'before-string (make-string offset ? )))))))
+;;   (advice-add 'xenops-math-display-image :after
+;;               #'eli/xenops-justify-fragment-overlay))
 
 (provide 'sid-dsp)
 ;;; sid-dsp.el ends here

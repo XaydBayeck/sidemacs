@@ -24,6 +24,13 @@
 
 ;;; Code:
 
+;; 
+;; (@* "Direnv" )
+;;
+
+(use-package direnv
+  :hook (after-init . direnv-mode))
+
 ;;
 ;; (@* "Version Control" )
 ;;
